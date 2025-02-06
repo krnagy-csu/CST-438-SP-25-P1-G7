@@ -1,115 +1,30 @@
-/*
-JC SUSBILLA
-GROUP 7
-PROJECT 1 ITERATION 1
-SIGN UP PAGE / CREATE ACCOUNT
-*/
-
 import React from "react";
-import { useState } from 'react';
-import { Text, View, StyleSheet, TouchableOpacity, TextInput } from "react-native";
+import { Text, View, TouchableOpacity, Image } from "react-native";
+import { useRouter } from "expo-router";
+// import appStyles from "C:/Users/jc/Documents/Project1_JC/JobFinder/app/styles/appStyles.js";
+import appStyles from "/Users/mora_a/Documents/GitHub/CST-438-SP-25-P1-G7/JobFinder/app/styles/appStyles.js";
 
-export default function SignUpScreen() {
-  // username value
-  const [username, setUsername] = useState('');
-  // password value
-  const [password, setPassword] = useState('');
+export default function LandingScreen() {
+  const router = useRouter();
+
   return (
-
-    <View style={styles.container}>
-      <Text style={styles.title}>Create Your Account!</Text>
-      
-      {/* prompt user for a username */}
-      {/* <Text style={styles.prompt}>Username</Text> */}
-      <TextInput 
-        style = {styles.input}
-        placeholder = "Enter a username"
-        value = {username}
-        onChangeText = {setUsername}
+    <View style={appStyles.container}>
+      <Image 
+        source={{ uri: "" }} 
+        style={appStyles.logo} 
+        resizeMode="contain" 
       />
+      <Text style={appStyles.title}>Welcome to Job Search</Text>
       
-      {/* prompt user for a password */}
-      {/* <Text style={styles.prompt}>Password</Text> */}
-      <TextInput 
-        style = {styles.input}
-        placeholder = "Enter a password"
-        value = {password}
-        onChangeText = {setPassword}
-      />
-
-      {/* send user entered credentialed / compare to database */}
-      <TouchableOpacity style={styles.signUpButton}>
-        <Text style={styles.buttonText}>Sign Up</Text>
+      {/* Navigate to Signup */}
+      <TouchableOpacity style={appStyles.caButton} onPress={() => router.push("/signup")}>
+        <Text style={appStyles.buttonText}>Create an Account</Text>
       </TouchableOpacity>
 
-      {/* send user to login page if user already has an account */}
-      <Text style={styles.smallText}>already a user?</Text>
-      <TouchableOpacity style={[styles.button, styles.secondaryButton]}>
-        <Text style={styles.buttonText}>Log In</Text>
+      {/* Navigate to Login */}
+      <TouchableOpacity style={[appStyles.caButton, appStyles.liButton]} onPress={() => router.push("/login")}>
+        <Text style={appStyles.buttonText}>Log In</Text>
       </TouchableOpacity>
-
     </View>
   );
 }
-const styles = StyleSheet.create({
-  container: {
-    flex: 1,
-    justifyContent: "center",
-    alignItems: "center",
-    backgroundColor: "#25292e",
-    padding: 20,
-  },
-  input: {
-    borderBottomColor: "white",
-    borderBottomWidth: 2,
-    alignSelf: 'stretch',
-    color: "#ffffff",
-    margin: 16,
-    padding: 8,
-    fontSize: 20
-  },
-  title: {
-    fontSize: 28,
-    fontWeight: "bold",
-    color: "#ffffff",
-    marginBottom: 50,
-  },
-  prompt: {
-    fontSize: 25,
-    color: "#ffffff",
-    marginBottom: 5,
-  },
-  smallText: {
-    fontSize: 14,
-    color: "#ffffff",
-    marginBottom: 15,
-    marginTop: 50
-  },
-  button: {
-    backgroundColor: "#007bff",
-    paddingVertical: 15,
-    paddingHorizontal: 40,
-    borderRadius: 8,
-    marginBottom: 15,
-    width: "80%",
-    alignItems: "center",
-  },
-  signUpButton: {
-    backgroundColor: "#007bff",
-    paddingVertical: 15,
-    paddingHorizontal: 40,
-    borderRadius: 8,
-    marginTop: 30,
-    marginBottom: 15,
-    width: "80%",
-    alignItems: "center",
-  },
-  secondaryButton: {
-    backgroundColor: "#444",
-  },
-  buttonText: {
-    color: "#ffffff",
-    fontSize: 18,
-    fontWeight: "bold",
-  },
-});
