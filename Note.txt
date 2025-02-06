@@ -1,1 +1,2 @@
 Please work on your own branches and merge them into this branch. Once this branch is functional we can then merge into main.
+Branch names should be camelcase, and multiple words should have hyphens between them. For example apiLookup, or signInPage.
