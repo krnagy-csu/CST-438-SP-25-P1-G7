@@ -1,7 +1,7 @@
 import React from "react";
 import { Text, View, TouchableOpacity, Image } from "react-native";
 import { useRouter } from "expo-router";
-import appStyles from "/Users/mora_a/Documents/GitHub/CST-438-SP-25-P1-G7/JobFinder/app/styles/appStyles.js";
+import appStyles from "./styles/appStyles.js";
 
 export default function LandingScreen() {
   const router = useRouter();
