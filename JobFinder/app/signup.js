@@ -3,7 +3,6 @@ import { useState } from 'react';
 import { useRouter } from "expo-router";
 import { Text, View, StyleSheet, TouchableOpacity, TextInput } from "react-native";
 
-
 export default function SignUpScreen() {
   const router = useRouter();
   // username value
