@@ -6,14 +6,16 @@ export const initDB = async () => {
     console.log('initDB');
     try{
       const db = await SQLite.openDatabaseAsync('userDatabase');
+      //create database for user and api
       await db.execAsync(`
         CREATE TABLE IF NOT EXISTS user (username TEXT NOT NULL, password TEXT NOT NULL);
+        CREATE TABLE IF NOT EXISTS api (jobName TEXT NOT NULL, jobID INTEGER, skillName TEXT NOT NULL, skillID INTEGER;
       `);
     } catch (e) {
       console.error("error: ", e)
     }
 }
-
+// -------------------------------------- USER DATABASE FUNCTIONS --------------------------------------
 //INSERT
 //insert user into user database
 export const insertUser = async () => {
@@ -67,3 +69,5 @@ export const insertUser = async () => {
       console.error("error: ", e)
     }
   }
+
+  // -------------------------------------- USER DATABASE FUNCTIONS --------------------------------------
