@@ -8,6 +8,7 @@ import {
   Alert,
   TouchableOpacity,
 } from 'react-native';
+import {router} from "expo-router";
 
 const LoginPage = () => {
   const [username, setUsername] = useState('');
@@ -24,6 +25,7 @@ const LoginPage = () => {
     } else {
       if (username === 'admin' && password === 'password') {
         Alert.alert('Login Successful', `Welcome back, ${username}!`);
+        router.push("/searchpage")
       } else {
         Alert.alert('Error', 'Invalid username or password');
       }
