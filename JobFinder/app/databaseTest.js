@@ -1,7 +1,7 @@
 import { StatusBar } from 'expo-status-bar';
 import { StyleSheet, Text, View, Button } from 'react-native';
 import * as SQLite from 'expo-sqlite';
-import { initDB, insertUser, selectUser, updateUser, deleteUser } from '../database/db';
+import { initDB, insertUser, selectUser, updateUser, deleteUser, selectAPI, insertAPI, deleteAPI } from '../database/db';
 
 
 export default function App() {
@@ -40,6 +40,28 @@ export default function App() {
           <Button style = {styles.btn}
               title="DELETE USER"
               onPress={() => deleteUser()}
+          />
+        </View>
+
+        {/* API DATABASE BUTTONS */}
+        <View>
+          <Button style = {styles.btn}
+              title="INSERT API"
+              onPress={() => insertAPI()}
+          />
+        </View>
+
+        <View>
+          <Button style = {styles.btn}
+              title="SELECT API"
+              onPress={() => selectAPI()}
+          />
+        </View>
+
+        <View>
+          <Button style = {styles.btn}
+              title="DELETE API"
+              onPress={() => deleteAPI()}
           />
         </View>
       </View>
