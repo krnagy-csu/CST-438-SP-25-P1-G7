@@ -24,6 +24,15 @@ export default function LandingScreen() {
       <TouchableOpacity style={[appStyles.caButton, appStyles.liButton]} onPress={() => router.push("/login")}>
         <Text style={appStyles.buttonText}>Log In</Text>
       </TouchableOpacity>
+
+      {/* just for database testing */}
+      {/*  
+      <View>
+        <TouchableOpacity style={[appStyles.caButton, appStyles.liButton]} onPress={() => router.push("/databaseTest")}>
+          <Text style={appStyles.buttonText}>database test</Text>
+        </TouchableOpacity>
+      </View>
+      */}
     </View>
   );
 }

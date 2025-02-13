@@ -94,7 +94,7 @@ return (
             </View>
         </Modal>
 
-        {/* fake terms and conditions  */}
+        {/* fake terms and conditions 
         
         <View style = {styles.checkboxContainer}>
             <Text style={styles.prompt }>Accept terms and conditions?   </Text>
@@ -104,7 +104,7 @@ return (
                 style = {styles.checkbox}
             >
             </CheckBox>
-        </View>
+        </View> */}
     
         
         {/* send user entered credentialed / compare to database */}
