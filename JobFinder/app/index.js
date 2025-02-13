@@ -1,4 +1,6 @@
 import React from "react";
+import * as SQLite from 'expo-sqlite';
+
 import { Text, View, TouchableOpacity, Image } from "react-native";
 import { useRouter } from "expo-router";
 import appStyles from "./styles/appStyles.js";
@@ -26,13 +28,12 @@ export default function LandingScreen() {
       </TouchableOpacity>
 
       {/* just for database testing */}
-      {/*  
       <View>
         <TouchableOpacity style={[appStyles.caButton, appStyles.liButton]} onPress={() => router.push("/databaseTest")}>
           <Text style={appStyles.buttonText}>database test</Text>
         </TouchableOpacity>
       </View>
-      */}
+      
     </View>
   );
 }
