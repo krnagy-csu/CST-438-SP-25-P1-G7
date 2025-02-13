@@ -32,6 +32,15 @@ const appStyles = StyleSheet.create({
   liButton: {
     backgroundColor: "#444",
   },
+  searchButton: {
+    backgroundColor: "#444",
+    paddingVertical: 12,
+    paddingHorizontal: 30,
+    borderRadius: 8,
+    marginBottom: 10,
+    width: "70%",
+    alignItems: "center",
+  },
   buttonText: {
     color: "#ffffff",
     fontSize: 16,
