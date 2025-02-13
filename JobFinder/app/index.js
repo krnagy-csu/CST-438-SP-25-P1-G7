@@ -24,6 +24,12 @@ export default function LandingScreen() {
       <TouchableOpacity style={[appStyles.caButton, appStyles.liButton]} onPress={() => router.push("/login")}>
         <Text style={appStyles.buttonText}>Log In</Text>
       </TouchableOpacity>
+
+      <TouchableOpacity style={appStyles.searchButton} onPress={() => router.push("/search")}>
+        <Text style={appStyles.buttonText}>Search Jobs</Text>
+      </TouchableOpacity>
+
+
     </View>
   );
 }

@@ -5,7 +5,7 @@ const appStyles = StyleSheet.create({
     flex: 1,
     justifyContent: "center",
     alignItems: "center",
-    backgroundColor: "#25292e",
+    backgroundColor: "#cccccd",
     padding: 20,
     paddingTop: 80,
   },
@@ -17,7 +17,7 @@ const appStyles = StyleSheet.create({
   title: {
     fontSize: 28,
     fontWeight: "bold",
-    color: "#ffffff",
+    color: "#000000",
     marginBottom: 30,
   },
   caButton: {
@@ -31,6 +31,15 @@ const appStyles = StyleSheet.create({
   },
   liButton: {
     backgroundColor: "#444",
+  },
+  searchButton: {
+    backgroundColor: "#444",
+    paddingVertical: 12,
+    paddingHorizontal: 30,
+    borderRadius: 8,
+    marginBottom: 10,
+    width: "70%",
+    alignItems: "center",
   },
   buttonText: {
     color: "#ffffff",
@@ -49,12 +58,7 @@ const appStyles = StyleSheet.create({
     backgroundColor: "#ffffff",
     textAlign: "left",
   },
-  smallText: {
-    fontSize: 14,
-    color: "#ffffff",
-    marginTop: 20,
-    textAlign: "center",
-  },
+
 });
 
 export default appStyles;
