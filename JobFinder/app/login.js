@@ -8,6 +8,9 @@ import {
   Alert,
   TouchableOpacity,
 } from 'react-native';
+import { useRouter } from "expo-router";
+
+const router = useRouter();
 
 const LoginPage = () => {
   const [username, setUsername] = useState('');
