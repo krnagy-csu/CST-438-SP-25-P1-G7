@@ -5,19 +5,23 @@ import {
   Text,
   Alert,
   TouchableOpacity,
+  Platform,
 } from 'react-native';
 import { useRouter } from "expo-router";
 import appStyles from "./styles/appStyles.js";
 
-const router = useRouter();
-
 const LoginPage = () => {
+  const router = useRouter();
   const [username, setUsername] = useState('');
   const [password, setPassword] = useState('');
   const [showPassword, setShowPassword] = useState(false);
 
   useEffect(() => {
-    document.title = "Login Page"; // Sets the title of the browser tab
+    if (Platform.OS === 'web') {
+      if (typeof document !== 'undefined') {
+        document.title = "Login Page"; // Sets the title of the browser tab
+      }
+    }
   }, []);
 
   const handleLogin = () => {

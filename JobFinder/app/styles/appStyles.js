@@ -86,8 +86,12 @@ const appStyles = StyleSheet.create({
     alignSelf: "center",
   },
   picker: {
-    height: 40,
+    height: 50,
+    paddingVertical: 10,
+    justifyContent: "center",
+    textAlign: "center", 
     backgroundColor: "#fff",
+    color: "#000",
   },
   jobItem: {
     width: "90%",
