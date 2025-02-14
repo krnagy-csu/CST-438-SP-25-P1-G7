@@ -7,18 +7,10 @@ import DatePicker, { getFormatedDate } from 'react-native-modern-datepicker';
 
 export default function SignUpScreen() {
     const router = useRouter();
-
-    // first name value
-    const [firstName, setFirstName] = useState('');
-
-    // last name value
-    const [lastName, setLastName] = useState('');
-
-    // email value
-    const [email, setEmail] = useState('');
-
-    // gender
-    const [gender, setGender] = useState('');
+    const [firstName, setFirstName] = useState(''); // first name value
+    const [lastName, setLastName] = useState('');// last name value
+    const [email, setEmail] = useState('');// email value
+    const [gender, setGender] = useState(''); // gender
 
     // DOB
     const [open, setOpen] = useState(false);
@@ -66,15 +58,15 @@ return (
         />
 
         {/* prompt user for gender */}
-        <TextInput 
+        {/* <TextInput 
             style = {styles.input}
             placeholder = "Enter gender"
             value = {gender}
             onChangeText = {setGender}
-        />
+        /> */}
 
         {/* prompt user for date of birth */}
-        <TouchableOpacity style={styles.signUpButton} onPress={handleOnPress}> 
+        {/* <TouchableOpacity style={styles.signUpButton} onPress={handleOnPress}> 
             <Text style={styles.buttonText}> Date of Birth </Text>
         </TouchableOpacity>
         <Modal 
@@ -92,7 +84,7 @@ return (
                     />
                 </View>
             </View>
-        </Modal>
+        </Modal> */}
 
         {/* fake terms and conditions 
         
