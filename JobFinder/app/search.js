@@ -12,11 +12,12 @@ export default function JobList() {
   const [jobs, setJobs] = useState([]);
   const [filteredJobs, setFilteredJobs] = useState([]); // Start empty
   const [loading, setLoading] = useState(true);
-  
+  const [selectedJobs, setSelectedJobs] = useState({}); // Store selected jobs
+
   // Search States
   const [tagSearch, setTagSearch] = useState('');
   const [jobTypeSearch, setJobTypeSearch] = useState('');
-  const [selectedLocation, setSelectedLocation] = useState('Select Location'); // Default selection
+  const [selectedLocation, setSelectedLocation] = useState('Select Location');
 
   useEffect(() => {
     fetchJobs();
@@ -79,6 +80,14 @@ export default function JobList() {
     filterJobs();
   }, [tagSearch, jobTypeSearch, selectedLocation]);
 
+  // Function to toggle job selection
+  const toggleJobSelection = (jobId) => {
+    setSelectedJobs(prevState => ({
+      ...prevState,
+      [jobId]: !prevState[jobId] // Toggle selection
+    }));
+  };
+
   return (
     <View style={appStyles.container}>
       <Text style={appStyles.title}>Job Search</Text>
@@ -127,18 +136,32 @@ export default function JobList() {
           data={filteredJobs}
           keyExtractor={(item) => item.slug}
           renderItem={({ item }) => (
-            <TouchableOpacity onPress={() => Linking.openURL(item.url)}>
-              <View style={appStyles.jobItem}>
-                <Text style={appStyles.jobTitle}>{item.title}</Text>
-                <Text style={appStyles.companyName}>{item.company_name}</Text>
-                <Text style={appStyles.location}>{item.location}</Text>
-                {item.tags && <Text style={appStyles.tags}>Tags: {item.tags.join(', ')}</Text>}
-                {item.job_types && <Text style={appStyles.jobTypes}>Job Type: {item.job_types.join(', ')}</Text>}
+            <View style={appStyles.jobItem}>
+              <View style={appStyles.jobRow}>
+                <TouchableOpacity onPress={() => Linking.openURL(item.url)} style={appStyles.jobTextContainer}>
+                  <Text style={appStyles.jobTitle}>{item.title}</Text>
+                  <Text style={appStyles.companyName}>{item.company_name}</Text>
+                  <Text style={appStyles.location}>{item.location}</Text>
+                  {item.tags && <Text style={appStyles.tags}>Tags: {item.tags.join(', ')}</Text>}
+                  {item.job_types && <Text style={appStyles.jobTypes}>Job Type: {item.job_types.join(', ')}</Text>}
+                </TouchableOpacity>
+
+                {/* Small Checkbox as a Button */}
+                <TouchableOpacity 
+                  onPress={() => toggleJobSelection(item.slug)} 
+                  style={appStyles.checkboxContainer}
+                >
+                  <Text style={appStyles.checkboxText}>
+                    {selectedJobs[item.slug] ? "✅ Selected" : "⬜ Select"}
+                  </Text>
+                </TouchableOpacity>
               </View>
-            </TouchableOpacity>
+            </View>
           )}
         />
       )}
     </View>
   );
 }
+
+

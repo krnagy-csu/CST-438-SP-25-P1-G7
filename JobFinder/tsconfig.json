@@ -3,6 +3,7 @@
   "compilerOptions": {
     "jsx": "react",
     "strict": true,
+    "allowJs": true,
     "paths": {
       "@/*": [
         "./*"
@@ -12,7 +13,10 @@
   "include": [
     "**/*.ts",
     "**/*.tsx",
+    "**/*.js",
+    "**/*.jsx",
     ".expo/types/**/*.ts",
     "expo-env.d.ts"
-, "app/index.js"  ]
+  ]
 }
+
