@@ -30,8 +30,8 @@ export default function SignUpScreen() {
       />
 
       {/* send user entered credentialed / compare to database */}
-      <TouchableOpacity style={appStyles.signUpButton}>
-        <Text style={appStyles.buttonText}>Sign Up</Text>
+      <TouchableOpacity style={styles.signUpButton} onPress={() => router.push("/signUpContinued")}>
+        <Text style={styles.buttonText}> Continue</Text>
       </TouchableOpacity>
 
       {/* send user to login page if user already has an account */}
