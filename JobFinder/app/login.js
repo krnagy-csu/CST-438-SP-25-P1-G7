@@ -2,23 +2,26 @@ import React, { useState, useEffect } from 'react';
 import {
   View,
   TextInput,
-  Button,
-  StyleSheet,
   Text,
   Alert,
   TouchableOpacity,
+  Platform,
 } from 'react-native';
 import { useRouter } from "expo-router";
-
-const router = useRouter();
+import appStyles from "./styles/appStyles.js";
 
 const LoginPage = () => {
+  const router = useRouter();
   const [username, setUsername] = useState('');
   const [password, setPassword] = useState('');
   const [showPassword, setShowPassword] = useState(false);
 
   useEffect(() => {
-    document.title = "Login Page"; // Sets the title of the browser tab for now
+    if (Platform.OS === 'web') {
+      if (typeof document !== 'undefined') {
+        document.title = "Login Page"; // Sets the title of the browser tab
+      }
+    }
   }, []);
 
   const handleLogin = () => {
@@ -34,19 +37,21 @@ const LoginPage = () => {
   };
 
   return (
-    <View style={styles.container}>
-      <Text style={styles.label}>Username</Text>
+    <View style={appStyles.container}>
+      <Text style={appStyles.title}>Login</Text>
+
+      <Text style={appStyles.label}>Username</Text>
       <TextInput
-        style={styles.input}
+        style={appStyles.input}
         placeholder="Enter your username"
         value={username}
         onChangeText={setUsername}
       />
 
-      <Text style={styles.label}>Password</Text>
-      <View style={styles.passwordContainer}>
+      <Text style={appStyles.label}>Password</Text>
+      <View style={appStyles.passwordContainer}>
         <TextInput
-          style={styles.input}
+          style={[appStyles.input, { flex: 1, paddingRight: 40 }]}
           placeholder="Enter your password"
           value={password}
           onChangeText={setPassword}
@@ -54,52 +59,20 @@ const LoginPage = () => {
         />
         <TouchableOpacity
           onPress={() => setShowPassword(!showPassword)}
-          style={styles.toggleButton}
+          style={[appStyles.toggleButton, { position: 'absolute', right: 10, top: '50%', transform: [{ translateY: -25 }] }]}
         >
           <Text>{showPassword ? 'Hide' : 'Show'}</Text>
         </TouchableOpacity>
       </View>
 
-      <Button title="Login" onPress={handleLogin} />
+      <TouchableOpacity style={appStyles.caButton} onPress={handleLogin}>
+        <Text style={appStyles.buttonText}>Login</Text>
+      </TouchableOpacity>
     </View>
   );
 };
 
-const styles = StyleSheet.create({
-  container: {
-    flex: 1,
-    justifyContent: 'center',
-    alignItems: 'center',
-    padding: 20,
-    backgroundColor: '#f5f5f5',
-  },
-  input: {
-    height: 50, 
-    width: '100%', 
-    borderColor: 'gray',
-    borderWidth: 1,
-    marginBottom: 15, 
-    padding: 10,
-    borderRadius: 5,
-    backgroundColor: '#ffffff', // White background for the inputs
-  },
-  label: {
-    marginBottom: 5,
-    fontSize: 18, 
-    fontWeight: 'bold',
-    alignSelf: 'flex-start', 
-  },
-  passwordContainer: {
-    flexDirection: 'row',
-    alignItems: 'center',
-    width: '100%', 
-  },
-  toggleButton: {
-    marginLeft: 10,
-    padding: 10, 
-  },
-});
-
 export default LoginPage;
+
 
 
