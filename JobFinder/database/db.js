@@ -2,21 +2,28 @@ import * as SQLite from 'expo-sqlite';
 
 // INIT DATABASE
 export const initDB = async () => {
-  console.log('initDB');
+  console.log('initializing database');
   try {
     const uDB = await SQLite.openDatabaseAsync('userDatabase'); // User database
     const aDB = await SQLite.openDatabaseAsync('apiDatabase'); // API database
+
+    // DROP TABLE CALL
+    //await uDB.execAsync(`DROP TABLE IF EXISTS user;`); // just for testing
 
     // CREATE USER DATABASE
     await uDB.execAsync(`
       CREATE TABLE IF NOT EXISTS user (
         id INTEGER PRIMARY KEY NOT NULL, 
-        username TEXT NOT NULL, 
-        password TEXT NOT NULL
+        username TEXT NOT NULL UNIQUE, 
+        password TEXT NOT NULL,
+        first_name TEXT NOT NULL,
+        last_name TEXT NOT NULL,
+        email TEXT NOT NULL UNIQUE
       );
     `);
 
     // CREATE API DATABASSE
+    //edit these
     await aDB.execAsync(`
       CREATE TABLE IF NOT EXISTS api (
         jobName TEXT NOT NULL,
@@ -25,7 +32,7 @@ export const initDB = async () => {
         skillID INTEGER NOT NULL
       );
     `);
-    
+  
     console.log('databases initialized successfully');
   } catch (e) {
     console.error("error initializing databases: ", e);
@@ -35,33 +42,19 @@ export const initDB = async () => {
 //do we want drop database functions?
 
 // --------------------------------------  USER DATABASE FUNCTIONS --------------------------------------
-// INSERT USER
-export const insertUser = async () => {
-  console.log('insertUser');
-  try {
-    const uDB = await SQLite.openDatabaseAsync('userDatabase');
-    const result = await uDB.runAsync(
-      'INSERT INTO user (username, password) VALUES (?, ?)', 
-      ["JCSUSBILLA", "pword"] // Provide values for username and password only
-    );
-    console.log(`Inserted user with ID: ${result.lastInsertRowId}`);
-  } catch (e) {
-    console.error("error: ", e);
-  }
-};
 
-// SELECT USER
 export const selectUser = async () => {
-  console.log('selectUser');
+  console.log("Fetching Users...");
   try {
-    const uDB = await SQLite.openDatabaseAsync('userDatabase');
-    const allRows = await uDB.getAllAsync('SELECT * FROM user');
-    console.log("allRows: ", allRows); // Show contents of the user table
-    for (const row of allRows) {
-      console.log(row.lastInsertRowId, row.username, row.password);
-    }
+    const uDB = await SQLite.openDatabaseAsync("userDatabase");
+    const allRows = await uDB.getAllAsync("SELECT * FROM user"); 
+
+    //testing
+      console.log("User Table Data:", allRows);
+      return allRows;
   } catch (e) {
-    console.error("error: ", e);
+    console.error("Error selecting users:", e);
+    return [];
   }
 };
 
@@ -88,6 +81,52 @@ export const deleteUser = async () => {
     console.error("error: ", e)
   }
 }
+
+// INSERT USER
+export const insertUser = async (username, password, firstName, lastName, email) => {
+  console.log(`Inserting user: ${username}`);//testing
+  try {
+    const uDB = await SQLite.openDatabaseAsync('userDatabase');
+
+    // check if username exists in database already
+    const result = await uDB.getFirstAsync(
+      'SELECT COUNT(*) AS count FROM user WHERE username = ?',
+      [username]
+    );
+
+    if (result.count > 0) {
+      console.log("Username already exists.");
+      return { success: false, message: "Username already exists. Please choose another." };
+    }
+
+    // insert all user details into user database table entry
+    await uDB.runAsync(
+      'INSERT INTO user (username, password, first_name, last_name, email) VALUES (?, ?, ?, ?, ?)',
+      [username, password, firstName, lastName, email]
+    );
+
+    console.log("User successfully registered!");
+    return { success: true };
+  } catch (e) {
+    console.error("Error inserting user: ", e);
+    return { success: false, message: "Error inserting user." };
+  }
+};
+
+export const doesUsernameExist = async (username) => {
+  console.log(`Checking if username exists: ${username}`);
+  try {
+    const uDB = await SQLite.openDatabaseAsync('userDatabase');
+    const result = await uDB.getFirstAsync(
+      'SELECT COUNT(*) AS count FROM user WHERE username = ?',
+      [username]
+    );
+    return result.count > 0;  // Returns true if username exists
+  } catch (e) {
+    console.error("Error checking username existence: ", e);
+    return false;
+  }
+};
 
 // -------------------------------------- API DATABASE FUNCTIONS --------------------------------------
 // will implement after someone completes the api stuff

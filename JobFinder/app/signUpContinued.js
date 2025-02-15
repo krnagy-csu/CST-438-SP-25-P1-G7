@@ -1,125 +1,91 @@
-import React from "react";
-import { useState } from 'react';
+import React, { useState, useEffect } from "react";
 import { useRouter } from "expo-router";
-import { Text, View, StyleSheet, TouchableOpacity, TextInput, Modal, CheckBox } from "react-native";
+import { Text, View, StyleSheet, TouchableOpacity, TextInput, Modal, CheckBox, Alert } from "react-native";
 import DatePicker, { getFormatedDate } from 'react-native-modern-datepicker';
+import { insertUser } from "../database/db.js";
+import AsyncStorage from '@react-native-async-storage/async-storage';
 //install npm install react-native-modern-datepicker --save
+//npm install @react-native-async-storage/async-storage
 
 export default function SignUpScreen() {
     const router = useRouter();
+    const [username, setUsername] = useState('');
+    const [password, setPassword] = useState('');
+    const [firstName, setFirstName] = useState('');                 // first name value
+    const [lastName, setLastName] = useState('');                   // last name value
+    const [email, setEmail] = useState('');                         // email value
 
-    // first name value
-    const [firstName, setFirstName] = useState('');
+    // load stored signup data from AsyncStorage
+    useEffect(() => {
+        const loadSignupData = async () => {
+            try {
+                const data = await AsyncStorage.getItem("signupData");
+                if (data) {
+                    const { username, password } = JSON.parse(data);
+                    setUsername(username);
+                    setPassword(password);
+                }
+            } catch (error) {
+                console.error("Error loading signup data:", error);
+            }
+        };
+        loadSignupData();
+    }, []);
 
-    // last name value
-    const [lastName, setLastName] = useState('');
+    const handleSignUp = async () => {
+        if (!firstName || !lastName || !email) {
+          Alert.alert("Error", "Please fill in all fields.");
+          return;
+        }
+      
+        const result = await insertUser(username, password, firstName, lastName, email);
+        if (result.success) {
+          Alert.alert("Success", "Account created successfully!");
+          router.push("/login");                                                // send to login screen
+        } else {
+          Alert.alert("Error", result.message);
+        }
+    };
 
-    // email value
-    const [email, setEmail] = useState('');
-
-    // gender
-    const [gender, setGender] = useState('');
-
-    // DOB
-    const [open, setOpen] = useState(false);
-    const [date, setDate] = useState(false);
-    const today = new Date();
-    const startDate = getFormatedDate(today.setDate(today.getDate()), 'YYYY/MM/DD')
-    function handleOnPress(){
-        setOpen(!open);
-    }
-    function handleChange(propDate){
-        setDate(propDate)
-        setOpen(false);
-    }
-
-    // terms and conditions
-    const [isChecked, setIsChecked] = useState(false);
-
-return (
-
+    return (
         <View style={styles.container}>
-        <Text style={styles.title}>Create Your Account!</Text>
+            <Text style={styles.title}>Create Your Account!</Text>
+            
+            {/* prompt user for first name */}
+            <TextInput 
+                style = {styles.input}
+                placeholder = "First name"
+                value = {firstName}
+                onChangeText = {setFirstName}
+            />
+            
+            {/* prompt user for last name */}
+            <TextInput 
+                style = {styles.input}
+                placeholder = "Last Name"
+                value = {lastName}
+                onChangeText = {setLastName}
+            />
+
+            {/* prompt user for email */}
+            <TextInput 
+                style = {styles.input}
+                placeholder = "Enter email address"
+                value = {email}
+                onChangeText = {setEmail}
+            />
         
-        {/* prompt user for first name */}
-        <TextInput 
-            style = {styles.input}
-            placeholder = "First name"
-            value = {firstName}
-            onChangeText = {setFirstName}
-        />
-        
-        {/* prompt user for last name */}
-        <TextInput 
-            style = {styles.input}
-            placeholder = "Last Name"
-            value = {lastName}
-            onChangeText = {setLastName}
-        />
+            {/* send user entered credentialed / compare to database */}
+            <TouchableOpacity style={styles.signUpButton} onPress={handleSignUp}>
+                <Text style={styles.buttonText}>Sign Up</Text>
+            </TouchableOpacity>
 
-        {/* prompt user for email */}
-        <TextInput 
-            style = {styles.input}
-            placeholder = "Enter email address"
-            value = {email}
-            onChangeText = {setEmail}
-        />
-
-        {/* prompt user for gender */}
-        <TextInput 
-            style = {styles.input}
-            placeholder = "Enter gender"
-            value = {gender}
-            onChangeText = {setGender}
-        />
-
-        {/* prompt user for date of birth */}
-        <TouchableOpacity style={styles.signUpButton} onPress={handleOnPress}> 
-            <Text style={styles.buttonText}> Date of Birth </Text>
-        </TouchableOpacity>
-        <Modal 
-            animationType = 'slide'
-            transparent  ={true}
-            visible = {open}
-        >
-            <View style = {styles.centeredView}>
-                <View style = {styles.modalView}>
-                    <DatePicker
-                        mode = 'calendar'
-                        maximumDate = {startDate}
-                        selected = {date}
-                        onDateChange={handleChange}
-                    />
-                </View>
-            </View>
-        </Modal>
-
-        {/* fake terms and conditions 
-        
-        <View style = {styles.checkboxContainer}>
-            <Text style={styles.prompt }>Accept terms and conditions?   </Text>
-            <CheckBox
-                value = {isChecked}
-                onValueChange = {setIsChecked}
-                style = {styles.checkbox}
-            >
-            </CheckBox>
-        </View> */}
-    
-        
-        {/* send user entered credentialed / compare to database */}
-        <TouchableOpacity style={styles.signUpButton}>
-            <Text style={styles.buttonText}>Sign Up</Text>
-        </TouchableOpacity>
-
-        {/* send user to login page if user already has an account */}
-        {/* <Text style={styles.smallText}>already a user?</Text> */}
-        <TouchableOpacity style={[styles.button, styles.secondaryButton]} onPress={() => router.push("/signup")}>
-            <Text style={styles.buttonText}>Back</Text>
-        </TouchableOpacity>
-
-    </View>
-);
+            {/* send user to login page if user already has an account */}
+            <TouchableOpacity style={[styles.button, styles.secondaryButton]} onPress={() => router.push("/signup")}>
+                <Text style={styles.buttonText}>Back</Text>
+            </TouchableOpacity>
+        </View>
+    );
 }
 const styles = StyleSheet.create({
     container: {

@@ -1,32 +1,43 @@
-import React, { useState, useEffect } from 'react';
-import {
-  View,
-  TextInput,
-  Button,
-  StyleSheet,
-  Text,
-  Alert,
-  TouchableOpacity,
-} from 'react-native';
+import React, { useState, useEffect } from "react";
+import {View, TextInput, Button, StyleSheet, Text, Alert, TouchableOpacity} from "react-native";
+import AsyncStorage from "@react-native-async-storage/async-storage";
+import { useRouter } from "expo-router";
+import { selectUser } from "../database/db";
 
 const LoginPage = () => {
-  const [username, setUsername] = useState('');
-  const [password, setPassword] = useState('');
+  const router = useRouter();
+  const [username, setUsername] = useState("");
+  const [password, setPassword] = useState("");
   const [showPassword, setShowPassword] = useState(false);
 
   useEffect(() => {
-    document.title = "Login Page"; // Sets the title of the browser tab for now
+    console.log("Login Page Loaded!"); 
   }, []);
 
-  const handleLogin = () => {
-    if (username === '' || password === '') {
-      Alert.alert('Error', 'Please fill in both fields');
-    } else {
-      if (username === 'admin' && password === 'password') {
-        Alert.alert('Login Successful', `Welcome back, ${username}!`);
+  // handle login authentication
+  const handleLogin = async () => {
+    if (!username || !password){
+      Alert.alert("Error", "Please fill in both fields");
+      return;
+    }
+
+    try{
+      const users = await selectUser();
+      const foundUser = users.find(
+        (user) => user.username === username && user.password === password
+      );
+
+      if (foundUser){
+        Alert.alert("login successful", `welcome back, ${username}!`);
+        await AsyncStorage.setItem("loggedInUser", JSON.stringify(foundUser));
+        //change this later
+        router.push("/signup");                                               //send to job search page
       } else {
-        Alert.alert('Error', 'Invalid username or password');
+        Alert.alert("error", "invalid username or password");
       }
+    } catch (error){
+      console.error("login Error:", error);
+      Alert.alert("error", "could not verify login credentials.");
     }
   };
 
@@ -53,11 +64,11 @@ const LoginPage = () => {
           onPress={() => setShowPassword(!showPassword)}
           style={styles.toggleButton}
         >
-          <Text>{showPassword ? 'Hide' : 'Show'}</Text>
+          <Text>{showPassword ? "Hide" : "Show"}</Text>
         </TouchableOpacity>
       </View>
 
-      <Button title="Login" onPress={handleLogin} />
+      <Button title="Login" onPress={handleLogin}/>
     </View>
   );
 };
@@ -65,38 +76,36 @@ const LoginPage = () => {
 const styles = StyleSheet.create({
   container: {
     flex: 1,
-    justifyContent: 'center',
-    alignItems: 'center',
+    justifyContent: "center",
+    alignItems: "center",
     padding: 20,
-    backgroundColor: '#f5f5f5',
+    backgroundColor: "#f5f5f5",
   },
   input: {
-    height: 50, 
-    width: '100%', 
-    borderColor: 'gray',
+    height: 50,
+    width: "100%",
+    borderColor: "gray",
     borderWidth: 1,
-    marginBottom: 15, 
+    marginBottom: 15,
     padding: 10,
     borderRadius: 5,
-    backgroundColor: '#ffffff', // White background for the inputs
+    backgroundColor: "#ffffff",
   },
   label: {
     marginBottom: 5,
-    fontSize: 18, 
-    fontWeight: 'bold',
-    alignSelf: 'flex-start', 
+    fontSize: 18,
+    fontWeight: "bold",
+    alignSelf: "flex-start",
   },
   passwordContainer: {
-    flexDirection: 'row',
-    alignItems: 'center',
-    width: '100%', 
+    flexDirection: "row",
+    alignItems: "center",
+    width: "100%",
   },
   toggleButton: {
     marginLeft: 10,
-    padding: 10, 
+    padding: 10,
   },
 });
 
 export default LoginPage;
-
-

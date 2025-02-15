@@ -1,21 +1,41 @@
 import React from "react";
 import { useState } from 'react';
 import { useRouter } from "expo-router";
-import { Text, View, StyleSheet, TouchableOpacity, TextInput } from "react-native";
+import { Text, View, StyleSheet, TouchableOpacity, TextInput, Alert } from "react-native";
+import AsyncStorage from '@react-native-async-storage/async-storage';
+import { doesUsernameExist } from "../database/db";
 
 export default function SignUpScreen() {
   const router = useRouter();
-  // username value
-  const [username, setUsername] = useState('');
-  // password value
-  const [password, setPassword] = useState('');
-  return (
+  const [username, setUsername] = useState('');     // username value
+  const [password, setPassword] = useState('');     // password value
+  
+  // validate username then save username and password to database
+  const checkUsernameAndContinue = async () => {
+    if (!username || !password){
+      Alert.alert("error", "please enter a username and password.");
+      return;
+    }
+    try{
+      const exists = await doesUsernameExist(username);
+      if (exists){
+        Alert.alert("error", "username is already taken. Please choose another.");
+        return;
+      }
+      await AsyncStorage.setItem("signupData", JSON.stringify({ username, password }));
+      router.push("/signUpContinued"); 
 
+    } catch (error){
+      console.error("error checking username:", error);
+      Alert.alert("error", "could not verify username availability.");
+    }
+  };
+
+  return (
     <View style={styles.container}>
       <Text style={styles.title}>Create Your Account!</Text>
       
       {/* prompt user for a username */}
-      {/* <Text style={styles.prompt}>Username</Text> */}
       <TextInput 
         style = {styles.input}
         placeholder = "Enter a username"
@@ -24,17 +44,17 @@ export default function SignUpScreen() {
       />
       
       {/* prompt user for a password */}
-      {/* <Text style={styles.prompt}>Password</Text> */}
       <TextInput 
         style = {styles.input}
         placeholder = "Enter a password"
         value = {password}
         onChangeText = {setPassword}
+        secureTextEntry={true}
       />
 
-      {/* send user entered credentialed / compare to database */}
-      <TouchableOpacity style={styles.signUpButton} onPress={() => router.push("/signUpContinued")}>
-        <Text style={styles.buttonText}> Continue</Text>
+      {/* send user entered credentials */}
+      <TouchableOpacity style={styles.signUpButton} onPress={checkUsernameAndContinue}>
+        <Text style={styles.buttonText}>Continue</Text>
       </TouchableOpacity>
 
       {/* send user to login page if user already has an account */}
@@ -42,7 +62,6 @@ export default function SignUpScreen() {
       <TouchableOpacity style={[styles.button, styles.secondaryButton]} onPress={() => router.push("/login")}>
         <Text style={styles.buttonText}>Log In</Text>
       </TouchableOpacity>
-
     </View>
   );
 }
