@@ -104,6 +104,9 @@ const appStyles = StyleSheet.create({
     shadowRadius: 5,
     elevation: 3,
     alignSelf: "center",
+    flexDirection: "row",
+    alignItems: "center",
+    justifyContent: "space-between",
   },
   jobTitle: {
     fontSize: 18,
@@ -131,6 +134,24 @@ const appStyles = StyleSheet.create({
     fontSize: 16,
     color: "gray",
   },
+  checkbox: {
+    width: 20,
+    height: 20,
+    borderWidth: 1,
+    borderRadius: 3,
+    borderColor: "#007bff",
+    justifyContent: "center",
+    alignItems: "center",
+    marginTop: 5,
+  },
+  checkboxChecked: {
+    backgroundColor: "#007bff",
+  },
+  checkboxText: {
+    fontSize: 14,
+    color: "black",
+    fontWeight: "bold",
+  },
   
   // Login Page Styles
   label: {
@@ -151,26 +172,34 @@ const appStyles = StyleSheet.create({
   },
   
   // Sign-Up Page Styles
-  prompt: {
-    fontSize: 25,
-    color: "#ffffff",
-    marginBottom: 5,
+  centeredView: {
+    flex: 1,
+    justifyContent: 'center',
+    alignItems: 'center',
+    marginTop: 22,
   },
-  smallText: {
-    textAlign: "center",
-    marginTop: 20,
-    fontSize: 16,
-    color: "gray",
-    marginBottom: 15,
+  modalView: {
+    margin: 20,
+    backgroundColor: 'white',
+    borderRadius: 20,
+    width: '90%',
+    padding: 35,
+    alignItems: 'center',
+    shadowColor: '#000',
+    shadowOffset: {
+        width: 0,
+        height: 2,
+    },
+    shadowOpacity: 0.25,
+    shadowRadius: 4,
+    elevation: 5,
   },
-  button: {
-    backgroundColor: "#007bff",
-    paddingVertical: 15,
-    paddingHorizontal: 40,
-    borderRadius: 8,
-    marginBottom: 15,
-    width: "80%",
-    alignItems: "center",
+  checkboxContainer: {
+    alignItems: 'center',
+    marginTop: 10,
+  },
+  secondaryButton: {
+    backgroundColor: "#444",
   },
   signUpButton: {
     backgroundColor: "#007bff",
@@ -182,8 +211,14 @@ const appStyles = StyleSheet.create({
     width: "80%",
     alignItems: "center",
   },
-  secondaryButton: {
-    backgroundColor: "#444",
+  button: {
+    backgroundColor: "#007bff",
+    paddingVertical: 15,
+    paddingHorizontal: 40,
+    borderRadius: 8,
+    marginBottom: 15,
+    width: "80%",
+    alignItems: "center",
   },
 });
 
