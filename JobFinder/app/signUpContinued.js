@@ -75,12 +75,12 @@ export default function SignUpScreen() {
             <Modal animationType="slide" transparent={true} visible={open}>
                 <View style={appStyles.centeredView}>
                     <View style={appStyles.modalView}>
-                        <DatePicker
-                            mode="calendar"
-                            maximumDate={startDate}
-                            selected={date}
-                            onDateChange={handleChange}
-                        />
+                    <DatePicker
+                        mode="calendar"
+                        maximumDate={startDate}
+                        current={date}
+                        onDateChange={handleChange}
+                    />
                     </View>
                 </View>
             </Modal>
