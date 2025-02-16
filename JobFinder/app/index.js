@@ -1,10 +1,16 @@
-import React from "react";
+import React, { useEffect } from "react";
+import * as SQLite from 'expo-sqlite';
 import { Text, View, TouchableOpacity, Image } from "react-native";
 import { useRouter } from "expo-router";
 import appStyles from "./styles/appStyles.js";
+import { initDB } from "../database/db.js";
 
 export default function LandingScreen() {
   const router = useRouter();
+  useEffect(() => {
+    // open database
+    initDB();
+  }, []);
 
   return (
     <View style={appStyles.container}>
@@ -25,11 +31,13 @@ export default function LandingScreen() {
         <Text style={appStyles.buttonText}>Log In</Text>
       </TouchableOpacity>
 
-      <TouchableOpacity style={appStyles.searchButton} onPress={() => router.push("/search")}>
-        <Text style={appStyles.buttonText}>Search Jobs</Text>
-      </TouchableOpacity>
-
-
+      {/* just for database testing */}
+      {/* <View>
+        <TouchableOpacity style={[appStyles.caButton, appStyles.liButton]} onPress={() => router.push("/databaseTest")}>
+          <Text style={appStyles.buttonText}>database test</Text>
+        </TouchableOpacity>
+      </View> */}
+      
     </View>
   );
 }

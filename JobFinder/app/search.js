@@ -5,6 +5,7 @@ import {
 } from 'react-native';
 import { Picker } from '@react-native-picker/picker';
 import appStyles from "./styles/appStyles.js";
+import AsyncStorage from "@react-native-async-storage/async-storage";
 
 const API_URL = 'https://www.arbeitnow.com/api/job-board-api';
 
