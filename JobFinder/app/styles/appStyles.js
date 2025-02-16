@@ -194,6 +194,17 @@ const appStyles = StyleSheet.create({
     shadowRadius: 4,
     elevation: 5,
   },
+  modalBackButton: {
+    marginTop: 10,
+    padding: 10,
+    backgroundColor: "#007bff",
+    borderRadius: 8,
+  },
+  modalBackButtonText: {
+    color: "#fff",
+    fontSize: 16,
+    fontWeight: "bold",
+  },
   checkboxContainer: {
     alignItems: 'center',
     marginTop: 10,
