@@ -1,18 +1,30 @@
+// search.js
 import React, { useState, useEffect } from 'react';
 import { 
-  View, Text, TextInput, FlatList, ActivityIndicator, 
-  TouchableOpacity, Linking 
+  View, 
+  Text, 
+  FlatList, 
+  ActivityIndicator, 
+  TouchableOpacity, 
+  Linking, 
+  Alert, 
+  TextInput 
 } from 'react-native';
 import { Picker } from '@react-native-picker/picker';
 import appStyles from "./styles/appStyles.js";
+import AsyncStorage from "@react-native-async-storage/async-storage";
+import { useRouter } from "expo-router";
+import { saveJob } from "../database/db"; 
 
 const API_URL = 'https://www.arbeitnow.com/api/job-board-api';
 
 export default function JobList() {
+  const router = useRouter();
   const [jobs, setJobs] = useState([]);
   const [filteredJobs, setFilteredJobs] = useState([]); // Start empty
   const [loading, setLoading] = useState(true);
   const [selectedJobs, setSelectedJobs] = useState({}); // Store selected jobs
+  const [username, setUsername] = useState("");
 
   // Search States
   const [tagSearch, setTagSearch] = useState('');
@@ -21,7 +33,20 @@ export default function JobList() {
 
   useEffect(() => {
     fetchJobs();
+    fetchUsername();
   }, []);
+
+  const fetchUsername = async () => {
+    try {
+      const userData = await AsyncStorage.getItem("loggedInUser");
+      if (userData) {
+        const user = JSON.parse(userData);
+        setUsername(user.username);
+      }
+    } catch (error) {
+      console.error("Error retrieving user: ", error);
+    }
+  };
 
   const fetchJobs = async () => {
     setLoading(true);
@@ -29,7 +54,6 @@ export default function JobList() {
       const response = await fetch(API_URL);
       const result = await response.json();
       console.log('API Response:', result);
-
       setJobs(result.data);
       setFilteredJobs([]); // Do not display jobs initially
     } catch (error) {
@@ -38,6 +62,21 @@ export default function JobList() {
       setFilteredJobs([]);
     } finally {
       setLoading(false);
+    }
+  };
+
+  const saveJobToDatabase = async (job) => {
+    // Uncomment the following lines if you require the user to be logged in:
+    // if (!username) {
+    //   Alert.alert("Error", "You must be logged in to save jobs.");
+    //   return;
+    // }
+    const result = await saveJob(username, job.title, job.company_name, job.location, job.url);
+
+    if (result.success) {
+      Alert.alert("Success", "Job saved successfully!");
+    } else {
+      Alert.alert("Error", result.message);
     }
   };
 
@@ -79,14 +118,6 @@ export default function JobList() {
   useEffect(() => {
     filterJobs();
   }, [tagSearch, jobTypeSearch, selectedLocation]);
-
-  // Function to toggle job selection
-  const toggleJobSelection = (jobId) => {
-    setSelectedJobs(prevState => ({
-      ...prevState,
-      [jobId]: !prevState[jobId] // Toggle selection
-    }));
-  };
 
   return (
     <View style={appStyles.container}>
@@ -146,22 +177,21 @@ export default function JobList() {
                   {item.job_types && <Text style={appStyles.jobTypes}>Job Type: {item.job_types.join(', ')}</Text>}
                 </TouchableOpacity>
 
-                {/* Small Checkbox as a Button */}
+                {/* Save Job Button */}
                 <TouchableOpacity 
-                  onPress={() => toggleJobSelection(item.slug)} 
-                  style={appStyles.checkboxContainer}
+                  onPress={() => saveJobToDatabase(item)} 
+                  style={appStyles.saveButtonContainer}
                 >
-                  <Text style={appStyles.checkboxText}>
-                    {selectedJobs[item.slug] ? "✅ Selected" : "⬜ Select"}
-                  </Text>
+                  <Text style={appStyles.saveButtonText}>Save Job</Text>
                 </TouchableOpacity>
               </View>
             </View>
           )}
         />
       )}
+      <TouchableOpacity style={appStyles.caButton} onPress={() => router.push("/SavedJobs")}>
+        <Text style={appStyles.buttonText}>View Saved Jobs</Text>
+      </TouchableOpacity>
     </View>
   );
 }
-
-
