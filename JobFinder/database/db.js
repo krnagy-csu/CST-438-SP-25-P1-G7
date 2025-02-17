@@ -7,9 +7,11 @@ export const initDB = async () => {
     const uDB = await SQLite.openDatabaseAsync('userDatabase'); // User database
     const aDB = await SQLite.openDatabaseAsync('apiDatabase'); // API database
 
+
     // DROP TABLE CALL
     //await uDB.execAsync(`DROP TABLE IF EXISTS user;`); // just for testing
     //awair aDB.execAsync(`DROP TABLE IF EXISTS saved_jobs;`)
+
 
     // CREATE USER DATABASE
     await uDB.execAsync(`
@@ -24,7 +26,9 @@ export const initDB = async () => {
     `);
 
     // CREATE API JOBS DATABASE
+
     //edit these
+
     await aDB.execAsync(`
       CREATE TABLE IF NOT EXISTS saved_jobs (
         id INTEGER PRIMARY KEY AUTOINCREMENT,
@@ -42,9 +46,11 @@ export const initDB = async () => {
   }
 };
 
+
 //do we want drop database functions?
 
 // --------------------------------------  USER DATABASE FUNCTIONS --------------------------------------
+
 
 export const selectUser = async () => {
   console.log("Fetching Users...");

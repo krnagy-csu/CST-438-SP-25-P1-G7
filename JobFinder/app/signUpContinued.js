@@ -1,3 +1,4 @@
+
 import React, { useState, useEffect } from "react";
 import { useRouter } from "expo-router";
 import { Text, View, TouchableOpacity, TextInput, Alert } from "react-native";
@@ -86,3 +87,4 @@ export default function SignUpScreen() {
         </View>
     );
 }
+

@@ -38,7 +38,6 @@ const LoginPage = () => {
     } catch (error){
       console.error("Login Error:", error);
       Alert.alert("Error", "Could not verify login credentials.");
-    }
   };
 
   return (
@@ -48,7 +47,7 @@ const LoginPage = () => {
       {/* Username Input */}
       <Text style={appStyles.label}>Username</Text>
       <TextInput
-        style={appStyles.input}
+        style={styles.input}
         placeholder="Enter your username"
         value={username}
         onChangeText={setUsername}
@@ -58,7 +57,7 @@ const LoginPage = () => {
       <Text style={appStyles.label}>Password</Text>
       <View style={appStyles.passwordContainer}>
         <TextInput
-          style={[appStyles.input, { flex: 1, paddingRight: 40 }]}
+          style={styles.input}
           placeholder="Enter your password"
           value={password}
           onChangeText={setPassword}
@@ -66,9 +65,9 @@ const LoginPage = () => {
         />
         <TouchableOpacity
           onPress={() => setShowPassword(!showPassword)}
-          style={[appStyles.toggleButton, { position: 'absolute', right: 10, top: '50%', transform: [{ translateY: -25 }] }]}
+          style={styles.toggleButton}
         >
-          <Text>{showPassword ? 'Hide' : 'Show'}</Text>
+          <Text>{showPassword ? "Hide" : "Show"}</Text>
         </TouchableOpacity>
       </View>
 
