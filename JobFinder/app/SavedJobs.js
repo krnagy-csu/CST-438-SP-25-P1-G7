@@ -1,4 +1,3 @@
-
 import React, { useState, useEffect } from "react";
 import { useRouter } from "expo-router";
 import { View, Text, FlatList, TouchableOpacity, Alert, Linking } from "react-native";
@@ -19,7 +18,7 @@ export default function SavedJobs() {
   const fetchSavedJobs = async () => {
     try {
       const userData = await AsyncStorage.getItem("loggedInUser");
-      
+
       if (userData) {
         const user = JSON.parse(userData);
         setUsername(user.username);
@@ -43,7 +42,7 @@ export default function SavedJobs() {
   // Delete only selected jobs
   const deleteSelectedJobs = async () => {
     const jobsToDelete = Object.keys(selectedJobs).filter((jobId) => selectedJobs[jobId]);
-    
+
     if (jobsToDelete.length === 0) {
       Alert.alert("Error", "No jobs selected for deletion.");
       return;
@@ -56,6 +55,12 @@ export default function SavedJobs() {
     setSelectedJobs({});
     fetchSavedJobs();
     Alert.alert("Success", "Selected jobs deleted.");
+  };
+
+  // Logout function
+  const handleLogout = async () => {
+    await AsyncStorage.removeItem("loggedInUser"); // Clear user session
+    router.push("/"); // Redirect to landing page
   };
 
   return (
@@ -80,7 +85,7 @@ export default function SavedJobs() {
                 </TouchableOpacity>
 
                 {/* Checkbox to select jobs for deletion */}
-                <TouchableOpacity 
+                <TouchableOpacity
                   onPress={() => toggleJobSelection(item.id)}
                   style={appStyles.checkboxContainer}
                 >
@@ -104,9 +109,13 @@ export default function SavedJobs() {
         <Text style={appStyles.buttonText}>Back to Search</Text>
       </TouchableOpacity>
 
-      
+      {/* Logout Button */}
+      <TouchableOpacity style={[appStyles.backButton, appStyles.secondaryButton]} onPress={handleLogout}>
+        <Text style={appStyles.buttonText}>Logout</Text>
+      </TouchableOpacity>
     </View>
   );
 }
+
 
 

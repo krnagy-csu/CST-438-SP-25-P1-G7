@@ -1,14 +1,13 @@
-// search.js
 import React, { useState, useEffect } from 'react';
-import { 
-  View, Text, TextInput, FlatList, ActivityIndicator, 
+import {
+  View, Text, TextInput, FlatList, ActivityIndicator,
   TouchableOpacity, Linking, Alert
 } from 'react-native';
 import { Picker } from '@react-native-picker/picker';
 import appStyles from "./styles/appStyles.js";
 import AsyncStorage from "@react-native-async-storage/async-storage";
 import { useRouter } from "expo-router";
-import { saveJob } from "../database/db"; 
+import { saveJob } from "../database/db";
 
 const API_URL = 'https://www.arbeitnow.com/api/job-board-api';
 
@@ -85,6 +84,14 @@ export default function JobList() {
     }
 
     Alert.alert("Success", "Selected jobs saved successfully!");
+  };
+
+  // Function to toggle job selection
+  const toggleJobSelection = (jobId) => {
+    setSelectedJobs(prevState => ({
+      ...prevState,
+      [jobId]: !prevState[jobId] // Toggle selection
+    }));
   };
 
   // Function to filter jobs dynamically
@@ -165,8 +172,6 @@ export default function JobList() {
 
       {loading ? (
         <ActivityIndicator size="large" color="#007bff" />
-      ) : filteredJobs.length === 0 && (tagSearch || jobTypeSearch || selectedLocation !== "Select Location") ? (
-        <Text style={appStyles.noResults}>No jobs found</Text>
       ) : filteredJobs.length === 0 ? (
         <Text style={appStyles.noResults}>Enter search criteria to see results</Text>
       ) : (
@@ -184,12 +189,14 @@ export default function JobList() {
                   {item.job_types && <Text style={appStyles.jobTypes}>Job Type: {item.job_types.join(', ')}</Text>}
                 </TouchableOpacity>
 
-                {/* Save Job Button */}
-                <TouchableOpacity 
-                  onPress={() => saveJobToDatabase(item)} 
-                  style={appStyles.saveButtonContainer}
+                {/* Checkbox for Selecting Jobs */}
+                <TouchableOpacity
+                  onPress={() => toggleJobSelection(item.slug)}
+                  style={appStyles.checkboxContainer}
                 >
-                  <Text style={appStyles.saveButtonText}>Save Job</Text>
+                  <Text style={appStyles.checkboxText}>
+                    {selectedJobs[item.slug] ? "✅ Selected" : "⬜ Select"}
+                  </Text>
                 </TouchableOpacity>
               </View>
             </View>
@@ -209,3 +216,4 @@ export default function JobList() {
     </View>
   );
 }
+

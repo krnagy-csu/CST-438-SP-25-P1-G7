@@ -1,4 +1,3 @@
-
 import React, { useState, useEffect } from "react";
 import { useRouter } from "expo-router";
 import { Text, View, TouchableOpacity, TextInput, Alert } from "react-native";
@@ -34,47 +33,47 @@ export default function SignUpScreen() {
 
     const handleSignUp = async () => {
         if (!firstName || !lastName || !email) {
-          Alert.alert("Error", "Please fill in all fields.");
-          return;
+            Alert.alert("Error", "Please fill in all fields.");
+            return;
         }
-      
+
         const result = await insertUser(username, password, firstName, lastName, email);
         if (result.success) {
-          Alert.alert("Success", "Account created successfully!");
-          router.push("/login");                                                // send to login screen
+            Alert.alert("Success", "Account created successfully!");
+            router.push("/login");                                                // send to login screen
         } else {
-          Alert.alert("Error", result.message);
+            Alert.alert("Error", result.message);
         }
     };
 
     return (
         <View style={appStyles.container}>
             <Text style={appStyles.title}>Create Your Account!</Text>
-            
+
             {/* prompt user for first name */}
-            <TextInput 
-                style = {appStyles.input}
-                placeholder = "First name"
-                value = {firstName}
-                onChangeText = {setFirstName}
+            <TextInput
+                style={appStyles.input}
+                placeholder="First name"
+                value={firstName}
+                onChangeText={setFirstName}
             />
-            
+
             {/* prompt user for last name */}
-            <TextInput 
-                style = {appStyles.input}
-                placeholder = "Last Name"
-                value = {lastName}
-                onChangeText = {setLastName}
+            <TextInput
+                style={appStyles.input}
+                placeholder="Last Name"
+                value={lastName}
+                onChangeText={setLastName}
             />
 
             {/* prompt user for email */}
-            <TextInput 
-                style = {appStyles.input}
-                placeholder = "Enter email address"
-                value = {email}
-                onChangeText = {setEmail}
+            <TextInput
+                style={appStyles.input}
+                placeholder="Enter email address"
+                value={email}
+                onChangeText={setEmail}
             />
-        
+
             {/* send user entered credentials / compare to database */}
             <TouchableOpacity style={appStyles.signUpButton} onPress={handleSignUp}>
                 <Text style={appStyles.buttonText}>Sign Up</Text>
