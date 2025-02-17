@@ -45,7 +45,8 @@ const LoginPage = () => {
     <View style={appStyles.container}>
       <Text style={appStyles.title}>Log In</Text>
 
-      {/* Username Input */}
+      {/* Username Label */}
+      <Text style={appStyles.label}>Username</Text>
       <TextInput
         style={appStyles.input}
         placeholder="Enter your username"
@@ -53,7 +54,7 @@ const LoginPage = () => {
         onChangeText={setUsername}
       />
 
-      {/* Password Input with Show/Hide Button */}
+      {/* Password Label */}
       <Text style={appStyles.label}>Password</Text>
       <View style={appStyles.passwordContainer}>
         <TextInput
@@ -85,3 +86,4 @@ const LoginPage = () => {
 };
 
 export default LoginPage;
+
