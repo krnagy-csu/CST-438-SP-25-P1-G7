@@ -3,7 +3,7 @@ import { View, TextInput, Text, Alert, TouchableOpacity } from "react-native";
 import AsyncStorage from "@react-native-async-storage/async-storage";
 import { useRouter } from "expo-router";
 import { selectUser } from "../database/db";
-import appStyles from "./styles/appStyles.js"; 
+import appStyles from "./styles/appStyles.js";
 
 const LoginPage = () => {
   const router = useRouter();
@@ -12,30 +12,30 @@ const LoginPage = () => {
   const [showPassword, setShowPassword] = useState(false);
 
   useEffect(() => {
-    console.log("Login Page Loaded!"); 
+    console.log("Login Page Loaded!");
   }, []);
 
   // handle login authentication
   const handleLogin = async () => {
-    if (!username || !password){
+    if (!username || !password) {
       Alert.alert("Error", "Please fill in both fields");
       return;
     }
 
-    try{
+    try {
       const users = await selectUser();
       const foundUser = users.find(
         (user) => user.username === username && user.password === password
       );
 
-      if (foundUser){
+      if (foundUser) {
         Alert.alert("Login Successful", `Welcome back, ${username}!`);
         await AsyncStorage.setItem("loggedInUser", JSON.stringify(foundUser));
         router.push("/search"); // Send to job search page
       } else {
         Alert.alert("Error", "Invalid username or password.");
       }
-    } catch (error){
+    } catch (error) {
       console.error("Login Error:", error);
       Alert.alert("Error", "Could not verify login credentials.");
     }

@@ -18,7 +18,7 @@ export default function SavedJobs() {
   const fetchSavedJobs = async () => {
     try {
       const userData = await AsyncStorage.getItem("loggedInUser");
-      
+
       if (userData) {
         const user = JSON.parse(userData);
         setUsername(user.username);
@@ -42,7 +42,7 @@ export default function SavedJobs() {
   // Delete only selected jobs
   const deleteSelectedJobs = async () => {
     const jobsToDelete = Object.keys(selectedJobs).filter((jobId) => selectedJobs[jobId]);
-    
+
     if (jobsToDelete.length === 0) {
       Alert.alert("Error", "No jobs selected for deletion.");
       return;
@@ -85,7 +85,7 @@ export default function SavedJobs() {
                 </TouchableOpacity>
 
                 {/* Checkbox to select jobs for deletion */}
-                <TouchableOpacity 
+                <TouchableOpacity
                   onPress={() => toggleJobSelection(item.id)}
                   style={appStyles.checkboxContainer}
                 >

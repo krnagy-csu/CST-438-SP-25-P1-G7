@@ -10,23 +10,23 @@ export default function SignUpScreen() {
   const router = useRouter();
   const [username, setUsername] = useState('');     // username value
   const [password, setPassword] = useState('');     // password value
-  
+
   // validate username then save username and password to database
   const checkUsernameAndContinue = async () => {
-    if (!username || !password){
+    if (!username || !password) {
       Alert.alert("Error", "Please enter a username and password.");
       return;
     }
-    try{
+    try {
       const exists = await doesUsernameExist(username);
-      if (exists){
+      if (exists) {
         Alert.alert("Error", "Username is already taken. Please choose another.");
         return;
       }
       await AsyncStorage.setItem("signupData", JSON.stringify({ username, password }));
-      router.push("/signUpContinued"); 
+      router.push("/signUpContinued");
 
-    } catch (error){
+    } catch (error) {
       console.error("Error checking username:", error);
       Alert.alert("Error", "Could not verify username availability.");
     }
@@ -35,17 +35,17 @@ export default function SignUpScreen() {
   return (
     <View style={appStyles.container}>
       <Text style={appStyles.title}>Create Your Account!</Text>
-      
+
       {/* prompt user for a username */}
-      <TextInput 
-        style = {appStyles.input}
-        placeholder = "Enter a username"
-        value = {username}
-        onChangeText = {setUsername}
+      <TextInput
+        style={appStyles.input}
+        placeholder="Enter a username"
+        value={username}
+        onChangeText={setUsername}
       />
-      
+
       {/* prompt user for a password */}
-      <TextInput 
+      <TextInput
         style={appStyles.input}
         placeholder="Enter a password"
         value={password}

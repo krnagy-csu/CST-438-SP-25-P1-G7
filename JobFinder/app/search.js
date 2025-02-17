@@ -1,13 +1,13 @@
 import React, { useState, useEffect } from 'react';
-import { 
-  View, Text, TextInput, FlatList, ActivityIndicator, 
+import {
+  View, Text, TextInput, FlatList, ActivityIndicator,
   TouchableOpacity, Linking, Alert
 } from 'react-native';
 import { Picker } from '@react-native-picker/picker';
 import appStyles from "./styles/appStyles.js";
 import AsyncStorage from "@react-native-async-storage/async-storage";
 import { useRouter } from "expo-router";
-import { saveJob } from "../database/db"; 
+import { saveJob } from "../database/db";
 
 const API_URL = 'https://www.arbeitnow.com/api/job-board-api';
 
@@ -190,7 +190,7 @@ export default function JobList() {
                 </TouchableOpacity>
 
                 {/* Checkbox for Selecting Jobs */}
-                <TouchableOpacity 
+                <TouchableOpacity
                   onPress={() => toggleJobSelection(item.slug)}
                   style={appStyles.checkboxContainer}
                 >
