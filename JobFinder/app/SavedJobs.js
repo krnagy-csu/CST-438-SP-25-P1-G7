@@ -1,3 +1,4 @@
+
 import React, { useState, useEffect } from "react";
 import { useRouter } from "expo-router";
 import { View, Text, FlatList, TouchableOpacity, Alert, Linking } from "react-native";
@@ -18,6 +19,7 @@ export default function SavedJobs() {
   const fetchSavedJobs = async () => {
     try {
       const userData = await AsyncStorage.getItem("loggedInUser");
+      
       if (userData) {
         const user = JSON.parse(userData);
         setUsername(user.username);
@@ -62,6 +64,7 @@ export default function SavedJobs() {
 
       {savedJobs.length === 0 ? (
         <Text style={appStyles.noResults}>No saved jobs found.</Text>
+
       ) : (
         <FlatList
           data={savedJobs}
@@ -100,6 +103,8 @@ export default function SavedJobs() {
       <TouchableOpacity style={[appStyles.backButton, appStyles.secondaryButton]} onPress={() => router.push("/search")}>
         <Text style={appStyles.buttonText}>Back to Search</Text>
       </TouchableOpacity>
+
+      
     </View>
   );
 }

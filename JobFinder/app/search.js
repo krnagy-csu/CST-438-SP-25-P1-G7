@@ -1,3 +1,4 @@
+// search.js
 import React, { useState, useEffect } from 'react';
 import { 
   View, Text, TextInput, FlatList, ActivityIndicator, 
@@ -47,7 +48,6 @@ export default function JobList() {
       const response = await fetch(API_URL);
       const result = await response.json();
       console.log('API Response:', result);
-
       setJobs(result.data);
       setFilteredJobs([]); // Do not display jobs initially
     } catch (error) {
@@ -126,14 +126,6 @@ export default function JobList() {
     filterJobs();
   }, [tagSearch, jobTypeSearch, selectedLocation]);
 
-  // Function to toggle job selection
-  const toggleJobSelection = (jobId) => {
-    setSelectedJobs(prevState => ({
-      ...prevState,
-      [jobId]: !prevState[jobId] // Toggle selection
-    }));
-  };
-
   return (
     <View style={appStyles.container}>
       <Text style={appStyles.title}>Job Search</Text>
@@ -192,14 +184,12 @@ export default function JobList() {
                   {item.job_types && <Text style={appStyles.jobTypes}>Job Type: {item.job_types.join(', ')}</Text>}
                 </TouchableOpacity>
 
-                {/* Small Checkbox as a Button */}
+                {/* Save Job Button */}
                 <TouchableOpacity 
-                  onPress={() => toggleJobSelection(item.slug)} 
-                  style={appStyles.checkboxContainer}
+                  onPress={() => saveJobToDatabase(item)} 
+                  style={appStyles.saveButtonContainer}
                 >
-                  <Text style={appStyles.checkboxText}>
-                    {selectedJobs[item.slug] ? "✅ Selected" : "⬜ Select"}
-                  </Text>
+                  <Text style={appStyles.saveButtonText}>Save Job</Text>
                 </TouchableOpacity>
               </View>
             </View>
@@ -219,6 +209,3 @@ export default function JobList() {
     </View>
   );
 }
-
-
-
