@@ -100,6 +100,8 @@ export default function SavedJobs() {
       <TouchableOpacity style={[appStyles.backButton, appStyles.secondaryButton]} onPress={() => router.push("/search")}>
         <Text style={appStyles.buttonText}>Back to Search</Text>
       </TouchableOpacity>
+
+      
     </View>
   );
 }

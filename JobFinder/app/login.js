@@ -46,6 +46,7 @@ const LoginPage = () => {
       <Text style={appStyles.title}>Log In</Text>
 
       {/* Username Input */}
+      <Text style={appStyles.label}>Username</Text>
       <TextInput
         style={appStyles.input}
         placeholder="Enter your username"
