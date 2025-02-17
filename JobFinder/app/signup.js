@@ -33,12 +33,12 @@ export default function SignUpScreen() {
   };
 
   return (
-    <View style={styles.container}>
-      <Text style={styles.title}>Create Your Account!</Text>
+    <View style={appStyles.container}>
+      <Text style={appStyles.title}>Create Your Account!</Text>
       
       {/* prompt user for a username */}
       <TextInput 
-        style = {styles.input}
+        style = {appStyles.input}
         placeholder = "Enter a username"
         value = {username}
         onChangeText = {setUsername}
