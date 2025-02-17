@@ -1,4 +1,3 @@
-
 import React, { useState, useEffect } from "react";
 import { useRouter } from "expo-router";
 import { View, Text, FlatList, TouchableOpacity, Alert, Linking } from "react-native";
@@ -58,6 +57,12 @@ export default function SavedJobs() {
     Alert.alert("Success", "Selected jobs deleted.");
   };
 
+  // Logout function
+  const handleLogout = async () => {
+    await AsyncStorage.removeItem("loggedInUser"); // Clear user session
+    router.push("/"); // Redirect to landing page
+  };
+
   return (
     <View style={appStyles.container}>
       <Text style={appStyles.title}>{username}'s Saved Jobs</Text>
@@ -104,9 +109,13 @@ export default function SavedJobs() {
         <Text style={appStyles.buttonText}>Back to Search</Text>
       </TouchableOpacity>
 
-      
+      {/* Logout Button */}
+      <TouchableOpacity style={[appStyles.backButton, appStyles.secondaryButton]} onPress={handleLogout}>
+        <Text style={appStyles.buttonText}>Logout</Text>
+      </TouchableOpacity>
     </View>
   );
 }
+
 
 
