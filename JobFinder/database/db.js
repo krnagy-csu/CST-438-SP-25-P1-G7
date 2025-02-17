@@ -9,6 +9,7 @@ export const initDB = async () => {
 
     // DROP TABLE CALL
     //await uDB.execAsync(`DROP TABLE IF EXISTS user;`); // just for testing
+    //awair aDB.execAsync(`DROP TABLE IF EXISTS saved_jobs;`)
 
     // CREATE USER DATABASE
     await uDB.execAsync(`
@@ -22,14 +23,16 @@ export const initDB = async () => {
       );
     `);
 
-    // CREATE API DATABASSE
+    // CREATE API JOBS DATABASE
     //edit these
     await aDB.execAsync(`
-      CREATE TABLE IF NOT EXISTS api (
-        jobName TEXT NOT NULL,
-        jobID INTEGER NOT NULL,
-        skillName TEXT NOT NULL,
-        skillID INTEGER NOT NULL
+      CREATE TABLE IF NOT EXISTS saved_jobs (
+        id INTEGER PRIMARY KEY AUTOINCREMENT,
+        username TEXT NOT NULL,
+        job_title TEXT NOT NULL,
+        company TEXT NOT NULL,
+        location TEXT NOT NULL,
+        job_url TEXT NOT NULL
       );
     `);
   
@@ -129,43 +132,54 @@ export const doesUsernameExist = async (username) => {
 };
 
 // -------------------------------------- API DATABASE FUNCTIONS --------------------------------------
-// will implement after someone completes the api stuff
 
-// INSERT API
-export const insertAPI = async () => {
-  console.log('insertAPI');
+// INSERT JOB IF USER SELECTS IT
+export const saveJob = async (username, jobTitle, company, location, jobUrl) => {
+  console.log(`saving job for ${username}: ${jobTitle}`);
   try{
-    const aDB = await SQLite.openDatabaseAsync('apiDatabase');
-    const result = await aDB.runAsync('INSERT INTO api (jobName, jobID, skillName, skillID) VALUES (?, ?, ?, ?)',"engineer", 1, "computers", 2);
-    console.log(result.lastInsertRowId, result.changes);
-  } catch (e) {
-    console.error("error: ", e)
-  }
-}
-// API SELECT
-export const selectAPI = async () => {
-  console.log('selectAPI');
-  try{
-    const aDB = await SQLite.openDatabaseAsync('apiDatabase');
-    const allRows = await aDB.getAllAsync('SELECT * FROM api');
-    console.log("allRows: ", allRows)                     // show contents of database table
-    for (const row of allRows) {
-      console.log(row.jobName, row.skillName);
-    }
-  } catch (e) {
-    console.error("error: ", e)
-  }
-}
+    const aDB = await SQLite.openDatabaseAsync("apiDatabase");
 
-// DELETE API
-export const deleteAPI = async () => {
-  console.log('deleteAPI');
-  try{
-    const aDB = await SQLite.openDatabaseAsync('apiDatabase');
-    await aDB.runAsync('DELETE FROM api WHERE jobName = $an', { $an: 'engineer'});
+    // insert the saved job into the job database
+    await aDB.runAsync(
+      "INSERT INTO saved_jobs (username, job_title, company, location, job_url) VALUES (?, ?, ?, ?, ?)",
+      [username, jobTitle, company, location, jobUrl]
+    );
 
-  } catch (e) {
-    console.error("error: ", e)
+    console.log("job saved successfully");
+    return { success: true };
+  } catch (e){
+    console.error("error saving job: ", e);
+    return { success: false, message: "error saving job" };
   }
-}
-  
+};
+
+// RETRIEVE SAVED JOBS FOR USER 
+export const getSavedJobs = async (username) => {
+  console.log(`fetching saved jobs for ${username}`);
+  try{
+    const aDB = await SQLite.openDatabaseAsync("apiDatabase");
+    const allRows = await aDB.getAllAsync("SELECT * FROM saved_jobs WHERE username = ?", [username]);
+
+    console.log("saved jobs:", allRows);
+    return allRows;
+  } catch (e){
+    console.error("error retrieving saved jobs: ", e);
+    return [];
+  }
+};
+
+// DELETE JOB IF USER UNSELECTS
+export const deleteSavedJob = async (jobId) => {
+  console.log(`Deleting saved job with ID: ${jobId}`);
+  try {
+    const aDB = await SQLite.openDatabaseAsync("apiDatabase");
+    await aDB.runAsync("DELETE FROM saved_jobs WHERE id = ?", [jobId]);
+
+    console.log("Job deleted successfully.");
+    return { success: true };
+  } catch (e) {
+    console.error("Error deleting job: ", e);
+    return { success: false, message: "Error deleting job." };
+  }
+};
+
