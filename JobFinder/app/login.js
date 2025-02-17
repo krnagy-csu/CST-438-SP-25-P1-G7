@@ -1,8 +1,9 @@
 import React, { useState, useEffect } from "react";
-import {View, TextInput, Button, StyleSheet, Text, Alert, TouchableOpacity} from "react-native";
+import { View, TextInput, Text, Alert, TouchableOpacity } from "react-native";
 import AsyncStorage from "@react-native-async-storage/async-storage";
 import { useRouter } from "expo-router";
 import { selectUser } from "../database/db";
+import appStyles from "./styles/appStyles.js"; 
 
 const LoginPage = () => {
   const router = useRouter();
@@ -28,22 +29,23 @@ const LoginPage = () => {
       );
 
       if (foundUser){
-        Alert.alert("login successful", `welcome back, ${username}!`);
+        Alert.alert("Login Successful", `Welcome back, ${username}!`);
         await AsyncStorage.setItem("loggedInUser", JSON.stringify(foundUser));
-        //change this later
-        router.push("/search");                                               //send to job search page
+        router.push("/search"); // Send to job search page
       } else {
-        Alert.alert("error", "invalid username or password");
+        Alert.alert("Error", "Invalid username or password.");
       }
     } catch (error){
-      console.error("login Error:", error);
-      Alert.alert("error", "could not verify login credentials.");
-    }
+      console.error("Login Error:", error);
+      Alert.alert("Error", "Could not verify login credentials.");
   };
 
   return (
-    <View style={styles.container}>
-      <Text style={styles.label}>Username</Text>
+    <View style={appStyles.container}>
+      <Text style={appStyles.title}>Log In</Text>
+
+      {/* Username Input */}
+      <Text style={appStyles.label}>Username</Text>
       <TextInput
         style={styles.input}
         placeholder="Enter your username"
@@ -51,8 +53,9 @@ const LoginPage = () => {
         onChangeText={setUsername}
       />
 
-      <Text style={styles.label}>Password</Text>
-      <View style={styles.passwordContainer}>
+      {/* Password Input with Show/Hide Button */}
+      <Text style={appStyles.label}>Password</Text>
+      <View style={appStyles.passwordContainer}>
         <TextInput
           style={styles.input}
           placeholder="Enter your password"
@@ -68,44 +71,17 @@ const LoginPage = () => {
         </TouchableOpacity>
       </View>
 
-      <Button title="Login" onPress={handleLogin}/>
+      {/* Login Button */}
+      <TouchableOpacity style={appStyles.signUpButton} onPress={handleLogin}>
+        <Text style={appStyles.buttonText}>Login</Text>
+      </TouchableOpacity>
+
+      {/* Go to Sign Up Page */}
+      <TouchableOpacity style={[appStyles.button, appStyles.secondaryButton]} onPress={() => router.push("/signup")}>
+        <Text style={appStyles.buttonText}>Create an Account</Text>
+      </TouchableOpacity>
     </View>
   );
 };
-
-const styles = StyleSheet.create({
-  container: {
-    flex: 1,
-    justifyContent: "center",
-    alignItems: "center",
-    padding: 20,
-    backgroundColor: "#f5f5f5",
-  },
-  input: {
-    height: 50,
-    width: "100%",
-    borderColor: "gray",
-    borderWidth: 1,
-    marginBottom: 15,
-    padding: 10,
-    borderRadius: 5,
-    backgroundColor: "#ffffff",
-  },
-  label: {
-    marginBottom: 5,
-    fontSize: 18,
-    fontWeight: "bold",
-    alignSelf: "flex-start",
-  },
-  passwordContainer: {
-    flexDirection: "row",
-    alignItems: "center",
-    width: "100%",
-  },
-  toggleButton: {
-    marginLeft: 10,
-    padding: 10,
-  },
-});
 
 export default LoginPage;

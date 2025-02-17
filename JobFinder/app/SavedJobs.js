@@ -1,24 +1,16 @@
-// SavedJobs.js
+
 import React, { useState, useEffect } from "react";
-import {
-  View,
-  Text,
-  FlatList,
-  ActivityIndicator,
-  TouchableOpacity,
-  Alert,
-  StyleSheet,
-} from "react-native";
-import AsyncStorage from "@react-native-async-storage/async-storage";
 import { useRouter } from "expo-router";
-import { getSavedJobs, deleteSavedJob } from "../database/db";
+import { View, Text, FlatList, TouchableOpacity, Alert, Linking } from "react-native";
+import AsyncStorage from "@react-native-async-storage/async-storage";
 import appStyles from "./styles/appStyles.js";
+import { getSavedJobs, deleteSavedJob } from "../database/db";
 
 export default function SavedJobs() {
   const router = useRouter();
   const [savedJobs, setSavedJobs] = useState([]);
-  const [loading, setLoading] = useState(true);
   const [username, setUsername] = useState("");
+  const [selectedJobs, setSelectedJobs] = useState({}); // Track selected jobs for deletion
 
   useEffect(() => {
     fetchSavedJobs();
@@ -27,115 +19,94 @@ export default function SavedJobs() {
   const fetchSavedJobs = async () => {
     try {
       const userData = await AsyncStorage.getItem("loggedInUser");
-      if (!userData) {
-        Alert.alert("Error", "No logged in user found.");
-        setLoading(false);
-        return;
-      }
-      const user = JSON.parse(userData);
-      setUsername(user.username);
+      
+      if (userData) {
+        const user = JSON.parse(userData);
+        setUsername(user.username);
 
-      const jobs = await getSavedJobs(user.username);
-      console.log("Saved jobs:", jobs);
-      setSavedJobs(jobs);
+        const jobs = await getSavedJobs(user.username);
+        setSavedJobs(jobs);
+      }
     } catch (error) {
       console.error("Error retrieving saved jobs:", error);
-      Alert.alert("Error", "Could not load saved jobs.");
-    } finally {
-      setLoading(false);
     }
   };
 
-  const removeJob = async (jobId) => {
-    try {
-      const result = await deleteSavedJob(jobId);
-      if (result.success) {
-        Alert.alert("Success", "Job removed.");
-        fetchSavedJobs();
-      } else {
-        Alert.alert("Error", result.message);
-      }
-    } catch (error) {
-      console.error("Error removing job:", error);
-      Alert.alert("Error", "Could not remove job.");
-    }
+  // Toggle job selection for deletion
+  const toggleJobSelection = (jobId) => {
+    setSelectedJobs(prevState => ({
+      ...prevState,
+      [jobId]: !prevState[jobId], // Toggle selection
+    }));
   };
 
-  const renderJobItem = ({ item }) => (
-    <View style={appStyles.jobItem}>
-      <TouchableOpacity style={appStyles.jobTextContainer} onPress={() => { /* Optionally open job URL */ }}>
-        <Text style={appStyles.jobTitle}>{item.job_title}</Text>
-        <Text style={appStyles.companyName}>{item.company}</Text>
-        <Text style={appStyles.location}>{item.location}</Text>
-      </TouchableOpacity>
-      <TouchableOpacity style={styles.removeButton} onPress={() => removeJob(item.id)}>
-        <Text style={styles.removeButtonText}>Remove</Text>
-      </TouchableOpacity>
-    </View>
-  );
+  // Delete only selected jobs
+  const deleteSelectedJobs = async () => {
+    const jobsToDelete = Object.keys(selectedJobs).filter((jobId) => selectedJobs[jobId]);
+    
+    if (jobsToDelete.length === 0) {
+      Alert.alert("Error", "No jobs selected for deletion.");
+      return;
+    }
 
-  if (loading) {
-    return (
-      <View style={styles.loadingContainer}>
-        <ActivityIndicator size="large" color="#007bff" />
-      </View>
-    );
-  }
+    for (const jobId of jobsToDelete) {
+      await deleteSavedJob(jobId);
+    }
+
+    setSelectedJobs({});
+    fetchSavedJobs();
+    Alert.alert("Success", "Selected jobs deleted.");
+  };
 
   return (
     <View style={appStyles.container}>
-      <Text style={[appStyles.title, styles.header]}>
-        Saved Jobs for {username}
-      </Text>
+      <Text style={appStyles.title}>{username}'s Saved Jobs</Text>
+
       {savedJobs.length === 0 ? (
-        <Text style={styles.noJobsText}>No saved jobs found.</Text>
+        <Text style={appStyles.noResults}>No saved jobs found.</Text>
+
       ) : (
         <FlatList
           data={savedJobs}
           keyExtractor={(item) => item.id.toString()}
-          renderItem={renderJobItem}
-          contentContainerStyle={styles.listContainer}
+          renderItem={({ item }) => (
+            <View style={appStyles.jobItem}>
+              <View style={appStyles.jobRow}>
+                {/* Job Info */}
+                <TouchableOpacity onPress={() => Linking.openURL(item.job_url)} style={appStyles.jobTextContainer}>
+                  <Text style={appStyles.jobTitle}>{item.job_title}</Text>
+                  <Text style={appStyles.companyName}>{item.company}</Text>
+                  <Text style={appStyles.location}>{item.location}</Text>
+                </TouchableOpacity>
+
+                {/* Checkbox to select jobs for deletion */}
+                <TouchableOpacity 
+                  onPress={() => toggleJobSelection(item.id)}
+                  style={appStyles.checkboxContainer}
+                >
+                  <Text style={appStyles.checkboxText}>
+                    {selectedJobs[item.id] ? "✅ Selected" : "⬜ Select"}
+                  </Text>
+                </TouchableOpacity>
+              </View>
+            </View>
+          )}
         />
       )}
-      <TouchableOpacity
-        style={appStyles.caButton}
-        onPress={() => router.push("/search")}
-      >
+
+      {/* Delete Selected Jobs Button */}
+      <TouchableOpacity style={appStyles.caButton} onPress={deleteSelectedJobs}>
+        <Text style={appStyles.buttonText}>Delete Selected Jobs</Text>
+      </TouchableOpacity>
+
+      {/* Back to Search Button */}
+      <TouchableOpacity style={[appStyles.backButton, appStyles.secondaryButton]} onPress={() => router.push("/search")}>
         <Text style={appStyles.buttonText}>Back to Search</Text>
       </TouchableOpacity>
+
+      
     </View>
   );
 }
 
-const styles = StyleSheet.create({
-  header: {
-    marginVertical: 16,
-    textAlign: "center",
-  },
-  noJobsText: {
-    fontSize: 18,
-    textAlign: "center",
-    marginTop: 50,
-    color: "#333",
-  },
-  listContainer: {
-    paddingBottom: 20,
-  },
-  removeButton: {
-    marginTop: 10,
-    backgroundColor: "#ff4d4d",
-    paddingVertical: 8,
-    paddingHorizontal: 12,
-    borderRadius: 5,
-    alignSelf: "flex-start",
-  },
-  removeButtonText: {
-    color: "#fff",
-    fontWeight: "bold",
-  },
-  loadingContainer: {
-    flex: 1,
-    justifyContent: "center",
-    alignItems: "center",
-  },
-});
+

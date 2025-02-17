@@ -1,97 +1,5 @@
 import * as SQLite from 'expo-sqlite';
 
-// // Polyfills for Async Methods
-
-// // Polyfill for openDatabaseAsync
-// if (!SQLite.openDatabaseAsync) {
-//   SQLite.openDatabaseAsync = (name) => {
-//     return new Promise((resolve, reject) => {
-//       try {
-//         const db = SQLite.openDatabase(name);
-//         resolve(db);
-//       } catch (e) {
-//         reject(e);
-//       }
-//     });
-//   };
-// }
-
-// // Polyfill for execAsync: executes a SQL statement and resolves with the result.
-// if (!SQLite.Database.prototype.execAsync) {
-//   SQLite.Database.prototype.execAsync = function (sql, params = []) {
-//     return new Promise((resolve, reject) => {
-//       this.transaction((tx) => {
-//         tx.executeSql(
-//           sql,
-//           params,
-//           (_, result) => resolve(result),
-//           (_, error) => {
-//             reject(error);
-//             return false;
-//           }
-//         );
-//       });
-//     });
-//   };
-// }
-
-// // Polyfill for runAsync: similar to execAsync but for running commands without needing a result.
-// if (!SQLite.Database.prototype.runAsync) {
-//   SQLite.Database.prototype.runAsync = function (sql, params = []) {
-//     return new Promise((resolve, reject) => {
-//       this.transaction((tx) => {
-//         tx.executeSql(
-//           sql,
-//           params,
-//           (_, result) => resolve(result),
-//           (_, error) => {
-//             reject(error);
-//             return false;
-//           }
-//         );
-//       });
-//     });
-//   };
-// }
-
-// // Polyfill for getAllAsync: executes a query and resolves with all rows as an array.
-// if (!SQLite.Database.prototype.getAllAsync) {
-//   SQLite.Database.prototype.getAllAsync = function (sql, params = []) {
-//     return new Promise((resolve, reject) => {
-//       this.transaction((tx) => {
-//         tx.executeSql(
-//           sql,
-//           params,
-//           (_, { rows }) => resolve(rows._array),
-//           (_, error) => {
-//             reject(error);
-//             return false;
-//           }
-//         );
-//       });
-//     });
-//   };
-// }
-
-// // Polyfill for getFirstAsync: executes a query and resolves with the first row.
-// if (!SQLite.Database.prototype.getFirstAsync) {
-//   SQLite.Database.prototype.getFirstAsync = function (sql, params = []) {
-//     return new Promise((resolve, reject) => {
-//       this.transaction((tx) => {
-//         tx.executeSql(
-//           sql,
-//           params,
-//           (_, { rows }) => resolve(rows.item(0)),
-//           (_, error) => {
-//             reject(error);
-//             return false;
-//           }
-//         );
-//       });
-//     });
-//   };
-// }
-
 // INIT DATABASE
 export const initDB = async () => {
   console.log('initializing database');
@@ -99,9 +7,11 @@ export const initDB = async () => {
     const uDB = await SQLite.openDatabaseAsync('userDatabase'); // User database
     const aDB = await SQLite.openDatabaseAsync('apiDatabase'); // API database
 
-    // DROP TABLE CALL (for testing, commented out)
-    // await uDB.execAsync(`DROP TABLE IF EXISTS user;`);
-    // await aDB.execAsync(`DROP TABLE IF EXISTS saved_jobs;`);
+
+    // DROP TABLE CALL
+    //await uDB.execAsync(`DROP TABLE IF EXISTS user;`); // just for testing
+    //awair aDB.execAsync(`DROP TABLE IF EXISTS saved_jobs;`)
+
 
     // CREATE USER DATABASE
     await uDB.execAsync(`
@@ -116,6 +26,9 @@ export const initDB = async () => {
     `);
 
     // CREATE API JOBS DATABASE
+
+    //edit these
+
     await aDB.execAsync(`
       CREATE TABLE IF NOT EXISTS saved_jobs (
         id INTEGER PRIMARY KEY AUTOINCREMENT,
@@ -133,15 +46,21 @@ export const initDB = async () => {
   }
 };
 
-// -----------------------  USER DATABASE FUNCTIONS -----------------------
+
+//do we want drop database functions?
+
+// --------------------------------------  USER DATABASE FUNCTIONS --------------------------------------
+
 
 export const selectUser = async () => {
   console.log("Fetching Users...");
   try {
     const uDB = await SQLite.openDatabaseAsync("userDatabase");
     const allRows = await uDB.getAllAsync("SELECT * FROM user"); 
-    console.log("User Table Data:", allRows);
-    return allRows;
+
+    //testing
+      console.log("User Table Data:", allRows);
+      return allRows;
   } catch (e) {
     console.error("Error selecting users:", e);
     return [];
@@ -151,28 +70,30 @@ export const selectUser = async () => {
 // UPDATE USER
 export const updateUser = async () => {
   console.log('updateUser');
-  try {
+  try{
     const uDB = await SQLite.openDatabaseAsync('userDatabase');
     await uDB.runAsync('UPDATE user SET password = ? WHERE username = ?', ['123', "JCSUSBILLA"]);
+
   } catch (e) {
-    console.error("error: ", e);
+    console.error("error: ", e)
   }
-};
+}
 
 // DELETE USER
 export const deleteUser = async () => {
   console.log('deleteUser');
-  try {
+  try{
     const uDB = await SQLite.openDatabaseAsync('userDatabase');
     await uDB.runAsync('DELETE FROM user WHERE username = $un', { $un: 'JCSUSBILLA' });
+
   } catch (e) {
-    console.error("error: ", e);
+    console.error("error: ", e)
   }
-};
+}
 
 // INSERT USER
 export const insertUser = async (username, password, firstName, lastName, email) => {
-  console.log(`Inserting user: ${username}`);
+  console.log(`Inserting user: ${username}`);//testing
   try {
     const uDB = await SQLite.openDatabaseAsync('userDatabase');
 
@@ -216,12 +137,12 @@ export const doesUsernameExist = async (username) => {
   }
 };
 
-// -----------------------  API DATABASE FUNCTIONS -----------------------
+// -------------------------------------- API DATABASE FUNCTIONS --------------------------------------
 
 // INSERT JOB IF USER SELECTS IT
 export const saveJob = async (username, jobTitle, company, location, jobUrl) => {
   console.log(`saving job for ${username}: ${jobTitle}`);
-  try {
+  try{
     const aDB = await SQLite.openDatabaseAsync("apiDatabase");
 
     // insert the saved job into the job database
@@ -232,7 +153,7 @@ export const saveJob = async (username, jobTitle, company, location, jobUrl) => 
 
     console.log("job saved successfully");
     return { success: true };
-  } catch (e) {
+  } catch (e){
     console.error("error saving job: ", e);
     return { success: false, message: "error saving job" };
   }
@@ -241,12 +162,13 @@ export const saveJob = async (username, jobTitle, company, location, jobUrl) => 
 // RETRIEVE SAVED JOBS FOR USER 
 export const getSavedJobs = async (username) => {
   console.log(`fetching saved jobs for ${username}`);
-  try {
+  try{
     const aDB = await SQLite.openDatabaseAsync("apiDatabase");
     const allRows = await aDB.getAllAsync("SELECT * FROM saved_jobs WHERE username = ?", [username]);
+
     console.log("saved jobs:", allRows);
     return allRows;
-  } catch (e) {
+  } catch (e){
     console.error("error retrieving saved jobs: ", e);
     return [];
   }
@@ -258,6 +180,7 @@ export const deleteSavedJob = async (jobId) => {
   try {
     const aDB = await SQLite.openDatabaseAsync("apiDatabase");
     await aDB.runAsync("DELETE FROM saved_jobs WHERE id = ?", [jobId]);
+
     console.log("Job deleted successfully.");
     return { success: true };
   } catch (e) {
@@ -265,3 +188,4 @@ export const deleteSavedJob = async (jobId) => {
     return { success: false, message: "Error deleting job." };
   }
 };
+

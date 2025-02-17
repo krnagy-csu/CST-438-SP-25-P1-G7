@@ -468,16 +468,15 @@ const appStyles = StyleSheet.create({
     alignItems: "center",
   },
 
-  saveButtonContainer: {
-    backgroundColor: "#28a745",
-    paddingVertical: 8,
-    paddingHorizontal: 12,
-    borderRadius: 5,
-    marginLeft: 10,
-  },
-  saveButtonText: {
-    color: "#fff",
-    fontWeight: "bold",
+  backButton: {
+    backgroundColor: "gray",
+    paddingVertical: 12,
+    paddingHorizontal: 30,
+    borderRadius: 8,
+    marginBottom: 10,
+    width: "70%",
+    alignItems: "center",
+
   },
 });
 

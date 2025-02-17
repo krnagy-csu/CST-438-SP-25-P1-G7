@@ -1,14 +1,8 @@
 // search.js
 import React, { useState, useEffect } from 'react';
 import { 
-  View, 
-  Text, 
-  FlatList, 
-  ActivityIndicator, 
-  TouchableOpacity, 
-  Linking, 
-  Alert, 
-  TextInput 
+  View, Text, TextInput, FlatList, ActivityIndicator, 
+  TouchableOpacity, Linking, Alert
 } from 'react-native';
 import { Picker } from '@react-native-picker/picker';
 import appStyles from "./styles/appStyles.js";
@@ -65,19 +59,32 @@ export default function JobList() {
     }
   };
 
-  const saveJobToDatabase = async (job) => {
-    // Uncomment the following lines if you require the user to be logged in:
-    // if (!username) {
-    //   Alert.alert("Error", "You must be logged in to save jobs.");
-    //   return;
-    // }
-    const result = await saveJob(username, job.title, job.company_name, job.location, job.url);
-
-    if (result.success) {
-      Alert.alert("Success", "Job saved successfully!");
-    } else {
-      Alert.alert("Error", result.message);
+  // Function to save selected jobs
+  const saveSelectedJobs = async () => {
+    if (!username) {
+      Alert.alert("Error", "You must be logged in to save jobs.");
+      return;
     }
+
+    const jobsToSave = Object.keys(selectedJobs)
+      .filter(jobId => selectedJobs[jobId]) // Only save selected jobs
+      .map(jobId => jobs.find(job => job.slug === jobId)); // Find job details
+
+    if (jobsToSave.length === 0) {
+      Alert.alert("Error", "No jobs selected.");
+      return;
+    }
+
+    for (const job of jobsToSave) {
+      const result = await saveJob(username, job.title, job.company_name, job.location, job.url);
+
+      if (!result.success) {
+        Alert.alert("Error", `Failed to save job: ${job.title}`);
+        return;
+      }
+    }
+
+    Alert.alert("Success", "Selected jobs saved successfully!");
   };
 
   // Function to filter jobs dynamically
@@ -189,6 +196,13 @@ export default function JobList() {
           )}
         />
       )}
+
+      {/* Save Jobs Button */}
+      <TouchableOpacity style={appStyles.caButton} onPress={saveSelectedJobs}>
+        <Text style={appStyles.buttonText}>Save Jobs</Text>
+      </TouchableOpacity>
+
+      {/* View Saved Jobs Button */}
       <TouchableOpacity style={appStyles.caButton} onPress={() => router.push("/SavedJobs")}>
         <Text style={appStyles.buttonText}>View Saved Jobs</Text>
       </TouchableOpacity>
