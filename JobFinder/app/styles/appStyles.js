@@ -231,6 +231,15 @@ const appStyles = StyleSheet.create({
     width: "80%",
     alignItems: "center",
   },
+  backButton: {
+    backgroundColor: "gray",
+    paddingVertical: 12,
+    paddingHorizontal: 30,
+    borderRadius: 8,
+    marginBottom: 10,
+    width: "70%",
+    alignItems: "center",
+  },
 });
 
 export default appStyles;

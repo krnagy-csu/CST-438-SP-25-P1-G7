@@ -1,18 +1,23 @@
 import React, { useState, useEffect } from 'react';
 import { 
   View, Text, TextInput, FlatList, ActivityIndicator, 
-  TouchableOpacity, Linking 
+  TouchableOpacity, Linking, Alert
 } from 'react-native';
 import { Picker } from '@react-native-picker/picker';
 import appStyles from "./styles/appStyles.js";
+import AsyncStorage from "@react-native-async-storage/async-storage";
+import { useRouter } from "expo-router";
+import { saveJob } from "../database/db"; 
 
 const API_URL = 'https://www.arbeitnow.com/api/job-board-api';
 
 export default function JobList() {
+  const router = useRouter();
   const [jobs, setJobs] = useState([]);
   const [filteredJobs, setFilteredJobs] = useState([]); // Start empty
   const [loading, setLoading] = useState(true);
   const [selectedJobs, setSelectedJobs] = useState({}); // Store selected jobs
+  const [username, setUsername] = useState("");
 
   // Search States
   const [tagSearch, setTagSearch] = useState('');
@@ -21,7 +26,20 @@ export default function JobList() {
 
   useEffect(() => {
     fetchJobs();
+    fetchUsername();
   }, []);
+
+  const fetchUsername = async () => {
+    try {
+      const userData = await AsyncStorage.getItem("loggedInUser");
+      if (userData) {
+        const user = JSON.parse(userData);
+        setUsername(user.username);
+      }
+    } catch (error) {
+      console.error("Error retrieving user: ", error);
+    }
+  };
 
   const fetchJobs = async () => {
     setLoading(true);
@@ -39,6 +57,34 @@ export default function JobList() {
     } finally {
       setLoading(false);
     }
+  };
+
+  // Function to save selected jobs
+  const saveSelectedJobs = async () => {
+    if (!username) {
+      Alert.alert("Error", "You must be logged in to save jobs.");
+      return;
+    }
+
+    const jobsToSave = Object.keys(selectedJobs)
+      .filter(jobId => selectedJobs[jobId]) // Only save selected jobs
+      .map(jobId => jobs.find(job => job.slug === jobId)); // Find job details
+
+    if (jobsToSave.length === 0) {
+      Alert.alert("Error", "No jobs selected.");
+      return;
+    }
+
+    for (const job of jobsToSave) {
+      const result = await saveJob(username, job.title, job.company_name, job.location, job.url);
+
+      if (!result.success) {
+        Alert.alert("Error", `Failed to save job: ${job.title}`);
+        return;
+      }
+    }
+
+    Alert.alert("Success", "Selected jobs saved successfully!");
   };
 
   // Function to filter jobs dynamically
@@ -160,8 +206,19 @@ export default function JobList() {
           )}
         />
       )}
+
+      {/* Save Jobs Button */}
+      <TouchableOpacity style={appStyles.caButton} onPress={saveSelectedJobs}>
+        <Text style={appStyles.buttonText}>Save Jobs</Text>
+      </TouchableOpacity>
+
+      {/* View Saved Jobs Button */}
+      <TouchableOpacity style={appStyles.caButton} onPress={() => router.push("/SavedJobs")}>
+        <Text style={appStyles.buttonText}>View Saved Jobs</Text>
+      </TouchableOpacity>
     </View>
   );
 }
+
 
 
